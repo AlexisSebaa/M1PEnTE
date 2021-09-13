@@ -3,7 +3,7 @@
 
 int main(){
 
-    double x=0, aire, integ=0 ;
+    double x=0, aire, integ=0, th ;
     double xmin = 0, xmax =4, dx=0.000001; // dx = (b-a)/(n-1)
 
     while(x<=xmax-dx){
@@ -13,7 +13,9 @@ int main(){
         integ+=aire;
     }//end while
 
+th = exp(xmax)-1;
+
 printf("\n L'aire sous la courbe vaut = %lf \n",integ);
+printf("\n L'aire theorique est : %lf \n",th);
 
 }//end main
-
