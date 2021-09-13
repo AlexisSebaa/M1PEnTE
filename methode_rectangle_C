@@ -1,0 +1,19 @@
+#include<stdlib.h>
+#include<stdio.h>
+
+int main(){
+
+    double x=0, aire, integ=0 ;
+    double xmin = 0, xmax =4, dx=0.000001; // dx = (b-a)/(n-1)
+
+    while(x<=xmax-dx){
+        //Y[x]= x*exp(x);
+        aire=dx*exp(x);
+        x+=dx;
+        integ+=aire;
+    }//end while
+
+printf("\n L'aire sous la courbe vaut = %lf \n",integ);
+
+}//end main
+
