@@ -1,0 +1,30 @@
+clc; clear all; close all; 
+
+path = '\Users\alexi\Documents\M1_PEnTE\Metro_TraitStat\datas\' ;
+file = strcat(path,'datas_tp2.txt');
+
+x_min=0;
+x_max = 5; 
+N = 100; 
+ux = 0.05; 
+uy = 0.05; 
+x= (linspace(x_min,x_max,N))'; %% Génère distrib reguliere de N points entre xmin et xmax
+P= [2,0]; %% Parametres du modele expo (Asymptote hor. et cte de temps)
+
+
+function y = fct(P,x)
+  y= P(1).*x+P(2); %% Genere le modele droite lineaire
+endfunction
+
+y = fct(P,x);
+ux = ux.*ones(N,1);
+uy = uy.*ones(N,1);
+
+y = y+uy.*randn(N,1);
+x = x+ux.*randn(N,1);
+
+figure(1)
+errorbar(x,y,ux,ux,uy,uy,"~>");
+
+datas = [x,ux,y,uy];
+dlmwrite(file,datas);
