@@ -1,0 +1,172 @@
+clear all; close all; clc; 
+pkg load signal
+
+#### 2.1 Estimation de moyenne et variance
+
+#### Q1
+
+N1 =1000; 
+xmin = -1; ## borne inferieure de l'intervalle
+xmax = 1; ## borne superieure
+y = xmin+(xmax-xmin)*rand(1,N1); ## loi uniforme dans un intervalle [xmin ; xmax]
+
+moy_y = mean(y) ;#VAL THEORIQUE 0
+var_y = var(y) ;#VAL THEORIQUE 1/3
+
+figure(1)
+hist(y,100);
+title("Variable aléatoire suivant une loi uniforme sur [-1 ; 1 ]");
+xlabel("Valeur de la réalisation");
+ylabel("Nombre d'occurence");
+
+
+disp(' ');
+disp(["La moyenne de y vaut : ", num2str(moy_y)," au lieu de 0 en theorie"]);
+disp(["La variance de y vaut : ", num2str(var_y)," au lieu de (1/3) en theorie"]);
+disp(' ');
+
+## En effet pour une loi uniforme moment ordre 1 =0 car m1 = xmin + xmax /2 = 0
+## De meme pour la moment ordre 2 = 1/3 car m2-m1**2 = (xmax-xmin)**2/12 = 4/12 = 1/3
+
+
+#### Q2 
+
+y2 = randn(1,N1)*sqrt(2) + 3; 
+
+moy_y2 = mean(y2); #val theorique 3
+var_y2 = var(y2); #val theorique 2
+
+disp(' ');
+disp(["La moyenne de y2 vaut : ", num2str(moy_y2)," au lieu de 3 en theorie"]);
+disp(["La variance de y2 vaut : ", num2str(var_y2)," au lieu de 2 en theorie"]);
+disp(' ');
+
+## On obtient une meilleure approximation de la moyenne et de la variance en augmentant N
+
+############################ VARIABLES ALEATOIRES ##############################
+
+#### 2.2 Theoreme central-limite
+
+#### Q3
+
+A = rand(50,1000); ## Création de la matrice A
+moy_A = mean(A(1,:)); #val theorique xmin + xmax /2
+var_A = var(A(1,:)); #val theorique (xmax-xmin)**2/12 = 1/12
+
+figure (2)
+hist(A(1,:),100); ## On prend la premiere ligne de A uniquement
+title(" 1ère ligne de A | VA de loi uniforme sur [0 ; 1 ]");
+xlabel("Valeur de la réalisation");
+ylabel("Nombre d'occurence");
+
+
+disp(' ');
+disp(["La moyenne de la 1ere ligne de A vaut : ", num2str(moy_A)," au lieu de 0.5 en theorie"]);
+disp(["La variance de la 1ere ligne de A vaut : ", num2str(var_A)," au lieu de (1/12) = 0.083 en theorie"]);
+disp(' ');
+
+#### Q4 
+
+A_som = sum(A);
+
+figure (3)
+hist(A_som, 100);
+title("Sommation des lignes de A");
+xlabel("Valeur de la réalisation");
+ylabel("Nombre d'occurence");
+
+
+moy_A_som = mean(A_som); #val theorique
+var_A_som = var(A_som); #val theorique
+
+disp(' ');
+disp(["La moyenne de A_som vaut : ", num2str(moy_A_som)," au lieu de 50-0/2 = 25 loi gaussienne"]);
+disp(["La variance de A_som vaut : ", num2str(var_A_som)," au lieu de "]);
+disp(' ');
+
+## Cette fois on obtient une gaussienne, loi uniforme tend vers gaussienne a partir d'un critere du TCL
+
+#### 2.3 Couple de variables aléatoires
+
+#### Q5
+ 
+load('couple.mat'); 
+
+figure(4)
+plot(Y,Z,'o'); ## en moyenne quand Y augmente, Z diminue 
+               ## leur covariance devrait etre negative
+title("Couple de variables aléatoires Y et Z");
+xlabel("Variable Y");
+ylabel("Variable Z");
+
+moy_Y = mean(Y);
+moy_Z = mean(Z);
+
+cov_YZ_empirique = mean((Y-mean(Y)).*(Z-mean(Z)));
+cov_YZ = cov(Y,Z);
+
+disp(' ');
+disp(["La covariance empirique vaut : ", num2str(cov_YZ_empirique)," elle est négative comme attendu"]);
+disp(["La covariance exacte vaut : ", num2str(cov_YZ)," elle est négative comme attendu"]);
+disp(' ');
+
+p_YZ = cov_YZ_empirique/(sqrt(var(Y)*var(Z)));
+
+## Les variables sont peu corrélés entre elles avec un coeff de -0.47
+
+############################# SIGNAUX ALEATOIRES ###############################
+
+
+#### 3.1.1 Sinusoide à phase aléatoire
+
+## Q1
+
+t = 0:99; 
+f0 = 0.1 ; ## Hz
+fe = 1 ;
+phi = (2*pi)*rand(100,1);## On a ici 100 réalisations de phi
+
+X = cos(2*pi*f0*t + phi);
+
+moy_X = mean(X) ;
+var_X = var(X) ; 
+
+figure(5)
+plot(t,moy_X)
+title("Moyenne de X en fonction du temps");
+xlabel("temps t");
+ylabel("Moyenne de X");
+
+
+figure(6)
+plot(t,var_X)
+title("Variance de X en fonction du temps");
+xlabel("temps t");
+ylabel("Variance de X");
+
+
+## a comparer avec les resultats de la 1.
+
+#### 3.2 Corrélation 
+
+#### Q1 
+
+N= 2**12;
+t_N = 1:N ;
+phi_N = (2*pi)*rand;
+X_N = cos(2*pi*f0*t_N + phi_N);
+
+#### Q3 
+
+
+R_theo = (1/2)*cos(2*pi*f0*[-50:50]);
+R_calc = xcorr(X_N,'unbiased') ;
+
+figure (7)
+plot(R_calc(N-50:N+50))
+hold on
+plot(R_theo,'o')
+title("Comparaison entre l'autocorrélation de X théorique et son estimation");
+xlabel("Tau");
+ylabel("Autocorrélation de X");
+legend("Autocorrélation estimée", "Autocorrélation théorique");
