@@ -80,7 +80,7 @@ moy_A_som = mean(A_som); #val theorique
 var_A_som = var(A_som); #val theorique
 
 disp(' ');
-disp(["La moyenne de A_som vaut : ", num2str(moy_A_som)," au lieu de 50-0/2 = 25 loi gaussienne"]);
+disp(["La moyenne de A_som vaut : ", num2str(moy_A_som)," au lieu de (50-0)/2 = 25 loi gaussienne"]);
 disp(["La variance de A_som vaut : ", num2str(var_A_som)," au lieu de "]);
 disp(' ');
 
@@ -104,13 +104,13 @@ moy_Z = mean(Z);
 
 cov_YZ_empirique = mean((Y-mean(Y)).*(Z-mean(Z)));
 cov_YZ = cov(Y,Z);
+p_YZ = cov_YZ_empirique/(sqrt(var(Y)*var(Z)));
 
 disp(' ');
 disp(["La covariance empirique vaut : ", num2str(cov_YZ_empirique)," elle est négative comme attendu"]);
 disp(["La covariance exacte vaut : ", num2str(cov_YZ)," elle est négative comme attendu"]);
+disp(["Le coefficient de corrélation vaut : ", num2str(p_YZ)]);
 disp(' ');
-
-p_YZ = cov_YZ_empirique/(sqrt(var(Y)*var(Z)));
 
 ## Les variables sont peu corrélés entre elles avec un coeff de -0.47
 
@@ -124,7 +124,7 @@ p_YZ = cov_YZ_empirique/(sqrt(var(Y)*var(Z)));
 t = 0:99; 
 f0 = 0.1 ; ## Hz
 fe = 1 ;
-phi = (2*pi)*rand(100,1);## On a ici 100 réalisations de phi
+phi = (2*pi)*rand(10,1);## On a ici 100 réalisations de phi
 
 X = cos(2*pi*f0*t + phi);
 
